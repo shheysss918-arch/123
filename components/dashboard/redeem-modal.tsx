@@ -59,32 +59,52 @@ export function RedeemModal({ children }: { children: React.ReactNode }) {
 }
 
 export function DashboardActions() {
-  const [mounted, setMounted] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [license, setLicense] = useState("")
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  // Prevent hydration mismatch by not rendering Dialog until client-side
-  if (!mounted) {
-    return (
-      <div className="flex items-center justify-end pb-6">
-        <Button variant="ghost" className="gap-2 text-foreground hover:text-primary border border-border/50">
-          <Plus className="h-4 w-4" />
-          Redeem a License
-        </Button>
-      </div>
-    )
+  const handleRedeem = () => {
+    setOpen(false)
+    setLicense("")
   }
 
   return (
     <div className="flex items-center justify-end pb-6">
-      <RedeemModal>
-        <Button variant="ghost" className="gap-2 text-foreground hover:text-primary border border-border/50">
-          <Plus className="h-4 w-4" />
-          Redeem a License
-        </Button>
-      </RedeemModal>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="ghost" className="gap-2 text-foreground hover:text-primary border border-border/50">
+            <Plus className="h-4 w-4" />
+            Redeem a License
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="border-border bg-card sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-primary">
+              <Key className="h-5 w-5" />
+              REDEEM A LICENSE
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="redeem-license" className="text-foreground">
+                License
+              </Label>
+              <Input
+                id="redeem-license"
+                placeholder="0000-XXXX-0000-XXXX-0000"
+                value={license}
+                onChange={(e) => setLicense(e.target.value)}
+                className="border-border bg-secondary text-foreground placeholder:text-muted-foreground"
+              />
+            </div>
+            <Button
+              onClick={handleRedeem}
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Redeem
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
