@@ -60,7 +60,7 @@ export default function FAQPage() {
     <div className="min-h-screen bg-background">
       <Sidebar />
 
-      <main className="ml-48 min-h-screen p-6">
+      <main className="md:ml-48 min-h-screen p-4 md:p-6 pt-20 md:pt-6">
         <Badge className="mb-4 bg-primary text-primary-foreground">FAQ</Badge>
 
         <Accordion type="single" collapsible className="space-y-2">

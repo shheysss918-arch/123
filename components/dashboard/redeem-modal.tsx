@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Key, Plus } from "lucide-react"
 import {
   Dialog,
@@ -59,6 +59,24 @@ export function RedeemModal({ children }: { children: React.ReactNode }) {
 }
 
 export function DashboardActions() {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Prevent hydration mismatch by not rendering Dialog until client-side
+  if (!mounted) {
+    return (
+      <div className="flex items-center justify-end pb-6">
+        <Button variant="ghost" className="gap-2 text-foreground hover:text-primary border border-border/50">
+          <Plus className="h-4 w-4" />
+          Redeem a License
+        </Button>
+      </div>
+    )
+  }
+
   return (
     <div className="flex items-center justify-end pb-6">
       <RedeemModal>

@@ -46,7 +46,7 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-background">
       <Sidebar />
 
-      <main className="ml-48 min-h-screen p-6">
+      <main className="md:ml-48 min-h-screen p-4 md:p-6 pt-20 md:pt-6">
         <DashboardActions />
 
         <div className="grid gap-4 md:grid-cols-3">

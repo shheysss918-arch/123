@@ -51,7 +51,7 @@ export default function StatusPage() {
     <div className="min-h-screen bg-background">
       <Sidebar />
 
-      <main className="ml-48 min-h-screen space-y-6 p-6">
+      <main className="md:ml-48 min-h-screen space-y-6 p-4 md:p-6 pt-20 md:pt-6">
         {/* Information Card */}
         <Card className="border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-2 text-foreground">
@@ -81,24 +81,39 @@ export default function StatusPage() {
         </Card>
 
         {/* Status Table */}
-        <Card className="border-border bg-card">
-          <div className="grid grid-cols-3 border-b border-border px-6 py-4">
+        <Card className="border-border bg-card overflow-hidden">
+          {/* Desktop Header */}
+          <div className="hidden md:grid grid-cols-3 border-b border-border px-6 py-4">
             <span className="font-semibold text-foreground">Name</span>
             <span className="font-semibold text-foreground">Status</span>
-            <span className="font-semibold text-foreground">Last Cheat Update</span>
+            <span className="font-semibold text-foreground">Last Update</span>
           </div>
 
           <div className="divide-y divide-border">
             {cheats.map((cheat) => (
-              <div key={cheat.id} className="grid grid-cols-3 px-6 py-4">
-                <span className="flex items-center gap-2 text-foreground">
-                  {cheat.name}
-                  {cheat.frozen && <Snowflake className="h-4 w-4 text-muted-foreground" />}
-                </span>
-                <div>
-                  <StatusBadge status={cheat.status} />
+              <div key={cheat.id} className="p-4 md:px-6 md:py-4">
+                {/* Mobile Layout */}
+                <div className="md:hidden space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-foreground font-medium">
+                      {cheat.name}
+                      {cheat.frozen && <Snowflake className="h-4 w-4 text-muted-foreground" />}
+                    </span>
+                    <StatusBadge status={cheat.status} />
+                  </div>
+                  <span className="text-sm text-muted-foreground">{cheat.lastUpdate}</span>
                 </div>
-                <span className="text-foreground">{cheat.lastUpdate}</span>
+                {/* Desktop Layout */}
+                <div className="hidden md:grid grid-cols-3">
+                  <span className="flex items-center gap-2 text-foreground">
+                    {cheat.name}
+                    {cheat.frozen && <Snowflake className="h-4 w-4 text-muted-foreground" />}
+                  </span>
+                  <div>
+                    <StatusBadge status={cheat.status} />
+                  </div>
+                  <span className="text-foreground">{cheat.lastUpdate}</span>
+                </div>
               </div>
             ))}
           </div>
