@@ -1,9 +1,8 @@
-import { Users, Key, Gamepad2, Plus, LucideIcon } from "lucide-react"
+import { Users, Key, Gamepad2, LucideIcon } from "lucide-react"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { StatCard } from "@/components/dashboard/stat-card"
 import { Announcements } from "@/components/dashboard/announcements"
-import { RedeemModal } from "@/components/dashboard/redeem-modal"
-import { Button } from "@/components/ui/button"
+import { DashboardActions } from "@/components/dashboard/redeem-modal"
 import { connect_to_db } from "@/lib/mongodb"
 
 interface StatItem {
@@ -48,14 +47,7 @@ export default async function DashboardPage() {
       <Sidebar />
 
       <main className="ml-48 min-h-screen p-6">
-        <div className="flex items-center justify-end pb-6">
-          <RedeemModal>
-            <Button variant="ghost" className="gap-2 text-foreground hover:text-primary border border-border/50">
-              <Plus className="h-4 w-4" />
-              Redeem a License
-            </Button>
-          </RedeemModal>
-        </div>
+        <DashboardActions />
 
         <div className="grid gap-4 md:grid-cols-3">
           {stats.map((stat) => (

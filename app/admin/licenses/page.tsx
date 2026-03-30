@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Key as KeyIcon, Download, Plus, Trash2, Clock, CheckCircle, XCircle } from "lucide-react"
+import { Key as KeyIcon, Copy, Plus } from "lucide-react"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -24,7 +24,7 @@ export default function AdminLicensesPage() {
   }, [])
 
   const handleGenerate = async () => {
-    if (!product) return toast.error("Select a target production branch.")
+    if (!product) return toast.error("Please select a product")
     
     try {
       const res = await fetch('/api/admin/licenses/generate', {
@@ -35,44 +35,39 @@ export default function AdminLicensesPage() {
       const data = await res.json()
       if (data.status === 'ok') {
         setGeneratedKeys(data.keys)
-        toast.success(`Successfully forged ${data.keys.length} entitlements.`)
+        toast.success(`Generated ${data.keys.length} license keys`)
       }
     } catch (e) {
-      toast.error("Cryptographic foundry relay failure.")
+      toast.error("Failed to generate licenses")
     }
   }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
-    toast.success("Identity key localized to clipboard.")
+    toast.success("Copied to clipboard")
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
+    <div className="min-h-screen bg-background">
       <Sidebar />
 
       <main className="ml-48 min-h-screen p-6">
-        <div className="mb-8 flex items-center gap-3 text-primary">
-          <KeyIcon className="h-6 w-6" />
-          <h1 className="text-2xl font-bold uppercase tracking-tighter">Terminal: Key Forge</h1>
-        </div>
-
         <div className="grid gap-6 lg:grid-cols-3">
-          {/* Generation Params */}
+          {/* Generate Licenses */}
           <Card className="border-border bg-card p-6 lg:col-span-1">
-            <div className="mb-6 flex items-center gap-2 text-primary font-semibold uppercase tracking-wider text-xs">
-              <Plus className="h-4 w-4" />
-              Forge Dispatch
+            <div className="mb-4 flex items-center gap-2 text-primary">
+              <Plus className="h-5 w-5" />
+              <span className="font-semibold uppercase">Generate Licenses</span>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-[10px] text-muted-foreground uppercase tracking-widest">Branch</Label>
+                <Label className="text-foreground">Product</Label>
                 <Select onValueChange={setProduct}>
                   <SelectTrigger className="border-border bg-secondary">
                     <SelectValue placeholder="Select Product" />
                   </SelectTrigger>
-                  <SelectContent className="bg-card border-border">
+                  <SelectContent>
                     {products.map(p => (
                       <SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>
                     ))}
@@ -81,47 +76,52 @@ export default function AdminLicensesPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] text-muted-foreground uppercase tracking-widest">Duration (Days)</Label>
+                <Label className="text-foreground">Duration (Days)</Label>
                 <Input type="number" value={days} onChange={e => setDays(e.target.value)} className="border-border bg-secondary" />
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] text-muted-foreground uppercase tracking-widest">Quantity</Label>
+                <Label className="text-foreground">Quantity</Label>
                 <Input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="border-border bg-secondary" />
               </div>
 
-              <Button onClick={handleGenerate} className="w-full bg-primary text-black font-bold hover:bg-primary/90 mt-4 rounded-none h-12 uppercase tracking-widest">
-                Initiate Key Forging
+              <Button onClick={handleGenerate} className="w-full">
+                Generate Keys
               </Button>
             </div>
           </Card>
 
-          {/* Results Area */}
+          {/* Generated Keys */}
           <Card className="border-border bg-card p-6 lg:col-span-2">
-             <div className="mb-6 flex items-center justify-between border-b border-border pb-4">
-                <div className="flex items-center gap-2 text-primary font-semibold uppercase tracking-wider text-xs">
-                  <Download className="h-4 w-4" />
-                  Harvested Entitlements
-                </div>
-                {generatedKeys.length > 0 && (
-                  <Button variant="ghost" size="sm" onClick={() => copyToClipboard(generatedKeys.join('\n'))} className="text-[10px] uppercase tracking-widest border border-border">Copy All</Button>
-                )}
-             </div>
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-primary">
+                <KeyIcon className="h-5 w-5" />
+                <span className="font-semibold uppercase">Generated Keys</span>
+              </div>
+              {generatedKeys.length > 0 && (
+                <Button variant="outline" size="sm" onClick={() => copyToClipboard(generatedKeys.join('\n'))} className="gap-1">
+                  <Copy className="h-3 w-3" />
+                  Copy All
+                </Button>
+              )}
+            </div>
 
-             <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                {generatedKeys.length === 0 ? (
-                  <div className="py-20 text-center text-muted-foreground italic text-sm">
-                    Awaiting dispatch instructions...
+            <div className="space-y-2 max-h-[500px] overflow-y-auto">
+              {generatedKeys.length === 0 ? (
+                <p className="py-8 text-center text-muted-foreground">
+                  No keys generated yet
+                </p>
+              ) : (
+                generatedKeys.map((k, i) => (
+                  <div key={i} className="flex items-center justify-between rounded-md border border-border bg-secondary/50 p-3 group hover:border-primary/50 transition-colors">
+                    <span className="font-mono text-sm">{k}</span>
+                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(k)} className="opacity-0 group-hover:opacity-100">
+                      <Copy className="h-3 w-3" />
+                    </Button>
                   </div>
-                ) : (
-                  generatedKeys.map((k, i) => (
-                    <div key={i} className="flex items-center justify-between bg-secondary/30 border border-border p-3 group hover:border-primary/50 transition-colors">
-                      <span className="font-mono text-sm tracking-widest">{k}</span>
-                      <Button variant="ghost" size="sm" onClick={() => copyToClipboard(k)} className="opacity-0 group-hover:opacity-100 text-[10px] uppercase">Copy</Button>
-                    </div>
-                  ))
-                )}
-             </div>
+                ))
+              )}
+            </div>
           </Card>
         </div>
       </main>

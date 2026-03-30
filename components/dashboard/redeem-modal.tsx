@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Key, X } from "lucide-react"
+import { Key, Plus } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -55,5 +55,18 @@ export function RedeemModal({ children }: { children: React.ReactNode }) {
         </div>
       </DialogContent>
     </Dialog>
+  )
+}
+
+export function DashboardActions() {
+  return (
+    <div className="flex items-center justify-end pb-6">
+      <RedeemModal>
+        <Button variant="ghost" className="gap-2 text-foreground hover:text-primary border border-border/50">
+          <Plus className="h-4 w-4" />
+          Redeem a License
+        </Button>
+      </RedeemModal>
+    </div>
   )
 }
